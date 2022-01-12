@@ -15,7 +15,6 @@ class LearningLog:
 
 
 class Network:
-    EPOCHS = 300
 
     forget_speed = 15
 
@@ -23,9 +22,10 @@ class Network:
 
     layers = []
 
-    def __init__(self) -> None:
+    def __init__(self, epochs=100) -> None:
+        self.epochs = epochs
         self.layers = [
-            Dense(16 * 16, 27),
+            Dense(16 * 16, 26),
         ]
         self.learning_log = LearningLog()
 
@@ -41,7 +41,7 @@ class Network:
 
         print(F'Teaching network on {len(xs)} samples')
 
-        for i in range(0, self.EPOCHS):
+        for i in range(0, self.epochs):
             self.loss_value = self.total_loss(xs, ys)
             self.learning_log.loss.append(np.sum(self.loss_value))
             print(f'Epoch {i}, loss {np.sum(self.loss_value)} {self.loss_value}', flush=True)

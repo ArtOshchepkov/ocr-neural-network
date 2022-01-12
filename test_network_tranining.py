@@ -7,10 +7,7 @@ import glob
 from network import Dense, Network
 
 
-def letter_to_y(letter: int) -> np.array:
-    res = np.zeros(27)
-    res[letter - 1] = 1
-    return res
+
 
 
 def test_training_model():
