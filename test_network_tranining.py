@@ -4,6 +4,7 @@ import numpy as np
 import imageio
 import glob
 
+from main import letter_to_y
 from network import Dense, Network
 
 
@@ -11,7 +12,7 @@ from network import Dense, Network
 
 
 def test_training_model():
-    letter_samples = 500
+    letter_samples = 30
     xs = []
     ys = []
 
@@ -29,9 +30,9 @@ def test_training_model():
 
     print(f'{len(xs)} images loaded')
 
-    network = Network()
+    network = Network(epochs=100)
     network.teach(xs, ys)
-    network.printLog()
+    network.print_log()
 
 
 def test_dense_layer_shape_test():

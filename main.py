@@ -6,15 +6,6 @@ import numpy as np
 
 from network import Network
 
-x = np.zeros((16, 16))
-
-x = x.reshape(16 * 16)
-
-net = Network()
-
-res = net.predict(x)
-
-print(res)
 
 
 def image_to_x(image):
@@ -59,7 +50,7 @@ def load_training_samples(letter_samples):
 def train_network(xs, ys, epochs=100):
     network = Network(epochs)
     network.teach(xs, ys)
-    network.printLog()
+    network.print_log()
     return network
 
 
