@@ -50,7 +50,7 @@ def load_training_samples(letter_samples):
 def train_network(xs, ys, epochs=100):
     network = Network(epochs)
     network.teach(xs, ys)
-    network.print_log()
+    network.plot_loss()
     return network
 
 

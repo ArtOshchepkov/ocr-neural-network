@@ -96,9 +96,10 @@ class Network:
         return np.median(maes)
 
 
-    def print_log(self, from_epoch=10):
+    def plot_loss(self, from_epoch=10):
         plt.figure()
-        print(self.learning_log.loss)
+        print(f'Loss: {self.learning_log.loss}')
+        plt.title('Total Loss')
         plt.plot(self.learning_log.loss[from_epoch:])
         plt.show()
 
