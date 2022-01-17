@@ -4,12 +4,11 @@ import imageio
 import matplotlib.pyplot as plt
 import numpy as np
 
-from network import Network
-
+from network import Network, Dense
 
 
 def image_to_x(image):
-    return image.reshape(16 * 16)
+    return image.reshape(16 * 16) / 255
 
 
 def load_image(im_path):
@@ -47,10 +46,11 @@ def load_training_samples(letter_samples):
     return xs, ys
 
 
-def train_network(xs, ys, epochs=100):
-    network = Network(epochs)
+def train_network(xs, ys, epochs=100, learn_speed=0.00000000000001):
+    network = Network(epochs=epochs, layers=[
+        Dense(in_shape=16 * 16, out_shape=26, learn_speed=learn_speed)
+    ])
     network.teach(xs, ys)
-    network.plot_loss()
     return network
 
 
@@ -66,8 +66,20 @@ def validate_net(network, path):
         plt.show()
 
 
+def plot_confusion_matrix(net, xs, ys):
+    tp = 0
+    fp = 0
+    tn = 0
+    fn = 0
+
+    for x, y in zip(xs, ys):
+
+        pass
+
+
 def test_validate_model():
-    xs, ys = load_training_samples(26_000)
+    xs, ys = load_training_samples(1000)
     print(f'{len(xs)} images loaded')
-    network = train_network(xs, ys, 60)
+    network = train_network(xs, ys, epochs=100, learn_speed=0.00000001)
+    network.plot_loss(from_epoch=10)
     validate_net(network, path="validation_data")

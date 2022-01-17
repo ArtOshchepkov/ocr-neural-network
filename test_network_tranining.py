@@ -30,9 +30,12 @@ def test_training_model():
 
     print(f'{len(xs)} images loaded')
 
-    network = Network(epochs=100)
+    learn_speed = 0.000000000001
+    network = Network(epochs=100, layers = [
+        Dense(in_shape=16*16, out_shape=26, learn_speed=learn_speed)
+    ])
     network.teach(xs, ys)
-    network.print_log()
+    network.plot_loss()
 
 
 def test_dense_layer_shape_test():
