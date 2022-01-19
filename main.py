@@ -48,7 +48,8 @@ def load_training_samples(letter_samples):
 
 def train_network(xs, ys, epochs=100, learn_speed=0.00000000000001):
     network = Network(epochs=epochs, layers=[
-        Dense(in_shape=16 * 16, out_shape=26, learn_speed=learn_speed)
+        Dense(in_shape=16 * 16, out_shape=300, learn_speed=learn_speed),
+        Dense(in_shape=300, out_shape=26, learn_speed=learn_speed)
     ])
     network.teach(xs, ys)
     return network
@@ -78,8 +79,9 @@ def plot_confusion_matrix(net, xs, ys):
 
 
 def test_validate_model():
-    xs, ys = load_training_samples(1000)
+    xs, ys = load_training_samples(500)
     print(f'{len(xs)} images loaded')
-    network = train_network(xs, ys, epochs=100, learn_speed=0.00000001)
+    #0.000000000000001
+    network = train_network(xs, ys, epochs=50, learn_speed=0.00000000001)
     network.plot_loss(from_epoch=10)
     validate_net(network, path="validation_data")
