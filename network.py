@@ -17,6 +17,7 @@ class LearningLog:
     mpe = []
     mae = []
 
+
 ### Activation F
 def relu(x):
     return max(0, x)
@@ -24,6 +25,7 @@ def relu(x):
 
 def relu_derivative(x):
     return x if x > 0 else 0
+
 
 ## Layer
 class Dense:
@@ -45,6 +47,9 @@ class Dense:
         return activation(signal)
 
     def _z(self, x):
+        """
+            w * input // + b
+        """
         return self.w.dot(x)
 
     def _z_derivative(self, x):
@@ -53,9 +58,10 @@ class Dense:
     def teach(self, x: np.array, local_grad: np.array) -> np.array:
         activation_derivative = self.relu_derivative_vector(self._z(x))
         z_derivative = self._z_derivative(x).repeat(self.out_shape).reshape(self.in_shape, self.out_shape)
-        w_grad = local_grad * activation_derivative * z_derivative
+        general_grad = local_grad * activation_derivative # grad general for current layer, and next one
+        w_grad = general_grad * z_derivative
         self.w -= self.learn_speed * w_grad.transpose()
-        return self._z_derivative(x)
+        return general_grad.dot(self.w)
 
 
 class Network:
@@ -139,15 +145,12 @@ class Network:
         SGD
         """
         pred = self.predict(x)
-        # print(pred)
-        # print(f'Predict shape {pred.shape}')
         err = self.loss(pred, y)
         # https://neerc.ifmo.ru/wiki/index.php?title=%D0%A1%D1%82%D0%BE%D1%85%D0%B0%D1%81%D1%82%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9_%D0%B3%D1%80%D0%B0%D0%B4%D0%B8%D0%B5%D0%BD%D1%82%D0%BD%D1%8B%D0%B9_%D1%81%D0%BF%D1%83%D1%81%D0%BA
         self.loss_value = err / self.forget_speed + (1 - 1 / self.forget_speed) * self.loss_value
         local_grad = self.loss_derivative(pred, y).transpose()
 
         layer_inputs = self.trace_inputs(x)
-
         for layer, input in zip(reversed(self.layers), reversed(layer_inputs)):
             local_grad = layer.teach(input, local_grad)
 
