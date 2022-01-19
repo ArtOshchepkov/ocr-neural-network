@@ -40,10 +40,11 @@ def test_aadt_regression_single_layer():
 def test_aadt_regression_multy_layer():
     xs, ys = load_aadt()
 
-    speed = 0.00000000000000000001
+    speed = 0.000000000000001
 
-    network = Network(epochs=10000, layers=[
-        Dense(in_shape=3, out_shape=5, learn_speed=speed),
+    network = Network(epochs=500, layers=[
+        Dense(in_shape=3, out_shape=15, learn_speed=speed),
+        Dense(in_shape=15, out_shape=5, learn_speed=speed),
         Dense(in_shape=5, out_shape=1, learn_speed=speed)
     ])
 

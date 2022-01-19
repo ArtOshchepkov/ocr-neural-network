@@ -11,12 +11,21 @@ input = np.zeros((16, 16))
 def repeat_array(nparr, times) -> np.array:
     return np.array(nparr.tolist() * times)
 
+
 class LearningLog:
     loss = []
     mpe = []
     mae = []
 
+### Activation F
+def relu(x):
+    return max(0, x)
 
+
+def relu_derivative(x):
+    return x if x > 0 else 0
+
+## Layer
 class Dense:
     w: np.array
 
@@ -25,6 +34,8 @@ class Dense:
         self.out_shape = out_shape
         self.learn_speed = learn_speed
         self.w = np.random.rand(out_shape, in_shape)
+        self.relu_derivative_vector = np.vectorize(relu_derivative)
+
         # print(self.w)
         print('Init Dense layer with shape ' + str(self.w.shape))
 
@@ -40,18 +51,14 @@ class Dense:
         return x
 
     def teach(self, x: np.array, local_grad: np.array) -> np.array:
-        relu_derivative_vector = np.vectorize(relu_derivative)
-        activation_derivative = relu_derivative_vector(self._z(x))
+        activation_derivative = self.relu_derivative_vector(self._z(x))
         z_derivative = self._z_derivative(x).repeat(self.out_shape).reshape(self.in_shape, self.out_shape)
         w_grad = local_grad * activation_derivative * z_derivative
         self.w -= self.learn_speed * w_grad.transpose()
-        # print(self.w)
-        # print(f'Input/Output local grads shapes: {local_grad.shape} {w_grad.shape}')
         return self._z_derivative(x)
 
 
 class Network:
-
     loss_value = 0
 
     layers = []
@@ -159,11 +166,3 @@ class Network:
 
     def loss_derivative(self, prediction, y):
         return prediction - y
-
-
-def relu(x):
-    return max(0, x)
-
-
-def relu_derivative(x):
-    return x if x > 0 else 0
