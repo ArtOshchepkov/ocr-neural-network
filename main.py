@@ -21,9 +21,16 @@ def letter_to_y(letter: int) -> np.array:
     return res
 
 
+def find_nearest(array, value):
+    array = np.asarray(array)
+    idx = (np.abs(array - value)).argmin()
+    return idx
+
+
 def y_to_letter(y: np.array):
     # print(y)
-    return chr(y.argmax() + 65)
+    idx = find_nearest(y, 1)
+    return chr(idx + 65)
 
 
 def load_training_samples(letter_samples):
@@ -47,9 +54,17 @@ def load_training_samples(letter_samples):
 
 
 def train_network(xs, ys, epochs=100, learn_speed=0.00000000000001):
+    # Dense(in_shape=16 * 16, out_shape=16 * 16 * 2, learn_speed=learn_speed),
+    # Dense(in_shape=16 * 16 * 2, out_shape=26, learn_speed=learn_speed)
+    # network = Network(epochs=epochs, layers=[
+    #     Dense(in_shape=16 * 16, out_shape=16*16*2, learn_speed=learn_speed),
+    #     Dense(in_shape=16*16*2, out_shape=6, learn_speed=learn_speed),
+    #     Dense(in_shape=6, out_shape=26, learn_speed=learn_speed)
+    # ])
+
     network = Network(epochs=epochs, layers=[
-        Dense(in_shape=16 * 16, out_shape=300, learn_speed=learn_speed),
-        Dense(in_shape=300, out_shape=26, learn_speed=learn_speed)
+        Dense(in_shape=16 * 16, out_shape=16 * 4, learn_speed=learn_speed),
+        Dense(in_shape=16 * 4, out_shape=26, learn_speed=learn_speed),
     ])
     network.teach(xs, ys)
     return network
@@ -74,14 +89,13 @@ def plot_confusion_matrix(net, xs, ys):
     fn = 0
 
     for x, y in zip(xs, ys):
-
         pass
 
 
 def test_validate_model():
-    xs, ys = load_training_samples(500)
+    xs, ys = load_training_samples(700)
     print(f'{len(xs)} images loaded')
-    #0.000000000000001
+    # 0.000000000000001
     network = train_network(xs, ys, epochs=50, learn_speed=0.00000000001)
     network.plot_loss(from_epoch=10)
     validate_net(network, path="validation_data")
