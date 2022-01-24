@@ -8,7 +8,7 @@ from network import Network, Dense
 
 
 def image_to_x(image):
-    return image.reshape(16 * 16) / 255
+    return (image.reshape(16 * 16) / 255).astype('float32')
 
 
 def load_image(im_path):
@@ -16,7 +16,7 @@ def load_image(im_path):
 
 
 def letter_to_y(letter: int) -> np.array:
-    res = np.zeros(26)
+    res = np.zeros(26).astype('float32')
     res[letter - 1] = 1
     return res
 
@@ -53,14 +53,7 @@ def load_training_samples(letter_samples):
     return xs, ys
 
 
-def train_network(xs, ys, epochs=100, learn_speed=0.00000000000001):
-    # Dense(in_shape=16 * 16, out_shape=16 * 16 * 2, learn_speed=learn_speed),
-    # Dense(in_shape=16 * 16 * 2, out_shape=26, learn_speed=learn_speed)
-    # network = Network(epochs=epochs, layers=[
-    #     Dense(in_shape=16 * 16, out_shape=16*16*2, learn_speed=learn_speed),
-    #     Dense(in_shape=16*16*2, out_shape=6, learn_speed=learn_speed),
-    #     Dense(in_shape=6, out_shape=26, learn_speed=learn_speed)
-    # ])
+def train_network(xs, ys, epochs=30, learn_speed=0.00000000000001):
 
     network = Network(epochs=epochs, layers=[
         Dense(in_shape=16 * 16, out_shape=16 * 4, learn_speed=learn_speed),
@@ -89,13 +82,21 @@ def plot_confusion_matrix(net, xs, ys):
     fn = 0
 
     for x, y in zip(xs, ys):
-        pass
+        y_hat = net.predict(x)
+        letter_hat = y_to_letter(y_hat)
+        letter_true = y_to_letter(y)
+
+        if letter_hat == letter_true:
+            tp += 1
+        else:
+            fp += 1
+    print(f'Precision: {tp / (tp + fp)}')
 
 
 def test_validate_model():
-    xs, ys = load_training_samples(700)
+    xs, ys = load_training_samples(500)
     print(f'{len(xs)} images loaded')
     # 0.000000000000001
-    network = train_network(xs, ys, epochs=50, learn_speed=0.00000000001)
+    network = train_network(xs, ys, epochs=100, learn_speed=0.0000000000001)
     network.plot_loss(from_epoch=10)
     validate_net(network, path="validation_data")

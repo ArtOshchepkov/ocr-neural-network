@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 
 import numpy as np
 
-input = np.zeros((16, 16))
 
 
 def repeat_array(nparr, times) -> np.array:
@@ -35,7 +34,7 @@ class Dense:
         self.in_shape = in_shape
         self.out_shape = out_shape
         self.learn_speed = learn_speed
-        self.w = np.random.rand(out_shape, in_shape)
+        self.w = np.random.rand(out_shape, in_shape).astype('float32')
         self.relu_derivative_vector = np.vectorize(relu_derivative)
 
         # print(self.w)
